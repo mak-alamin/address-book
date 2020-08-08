@@ -1,0 +1,14 @@
+{
+    "name": "mak-alamin/wedevs-academy",
+    "description": "A tutorial plugin from wedevs academy",
+    "type": "wordpress-plugin",
+    "license": "GPLv2",
+    "minimum-stability": "dev",
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Wedevs\\Academy\\": "includes/"
+        },
+        "files": ["includes/functions.php"]
+    }
+}
