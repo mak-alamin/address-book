@@ -102,5 +102,34 @@ namespace Wedevs\Academy\Admin;
         wp_redirect( $redirected_to );
         exit;
     }
+
+    /**
+     * Delete an address
+     * 
+     * @return void 
+     */
+    public function delete_address()
+    {  
+        if ( ! wp_verify_nonce( $_REQUEST['_wpnonce'], 'wd-ac-delete-address') ) {
+            wp_die("Are you cheating?");
+        }
+
+        if ( ! current_user_can( 'manage_options' ) ) {
+            wp_die( 'Are you cheating?' );
+        }
+
+        $id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+
+        $address_deleted = wd_ac_delete_address( $id );
+
+        if ( $address_deleted ) {
+            $redirected_to = admin_url( 'admin.php?page=wedevs-academy&address-deleted=true' );
+        } else {
+            $redirected_to = admin_url( 'admin.php?page=wedevs-academy&address-deleted=false' );
+        }
+
+        wp_redirect( $redirected_to );
+        exit;
+    }
  }
  

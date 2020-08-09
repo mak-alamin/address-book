@@ -113,7 +113,7 @@ function wd_ac_address_count() {
 
 
 /**
- * Fetch a single contact from the DB
+ * Fetch a single address from the DB
  *
  * @param  int $id
  *
@@ -124,5 +124,23 @@ function wd_ac_get_address( $id ) {
 
     return $wpdb->get_row(
         $wpdb->prepare( "SELECT * FROM {$wpdb->prefix}ac_addresses WHERE id = %d", $id )
+    );
+}
+
+
+/**
+ * Delete an address
+ *
+ * @param  int $id
+ *
+ * @return int|bool
+ */
+function wd_ac_delete_address( $id ) {
+    global $wpdb;
+
+    return $wpdb->delete(
+        $wpdb->prefix . 'ac_addresses',
+        [ 'id' => $id ],
+        [ '%d' ]
     );
 }
