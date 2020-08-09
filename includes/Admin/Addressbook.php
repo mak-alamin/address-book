@@ -16,6 +16,7 @@ namespace Wedevs\Academy\Admin;
     function plugin_page()
     {
         $action = isset( $_GET['action'] ) ? $_GET['action'] : "list";
+        $id     = isset( $_GET['id'] ) ? intval( $_GET['id'] ) : 0;
 
         switch ($action) {
             case 'new':
@@ -23,6 +24,7 @@ namespace Wedevs\Academy\Admin;
                 break;
             
             case 'edit':
+                $address  = wd_ac_get_address( $id );
                 $template = __DIR__ . '/views/address-edit.php';
                 break;
 
@@ -61,6 +63,8 @@ namespace Wedevs\Academy\Admin;
         $address = isset( $_POST['address'] ) ? sanitize_textarea_field( $_POST['address'] ) : '';
         $phone   = isset( $_POST['phone'] ) ? sanitize_text_field( $_POST['phone'] ) : '';
 
+        $id      = isset( $_POST['id'] ) ? intval( $_POST['id'] ) : 0;
+
         if ( empty( $name ) ) {
             $this->errors['name'] = __( 'Please provide a name.', 'wedevs-academy' );
         }
@@ -73,18 +77,28 @@ namespace Wedevs\Academy\Admin;
             return;
         }
 
-        $insert_id = wd_ac_insert_address( [
+        $args = [
             'name'    => $name,
             'address' => $address,
             'phone'   => $phone
-        ] );
+        ];
+
+        if ( $id ) {
+            $args['id'] = $id;
+        }
+
+        $insert_id = wd_ac_insert_address( $args );
 
         if ( is_wp_error( $insert_id ) ) {
             wp_die( $insert_id->get_error_message() );
         }
 
-        $redirected_to = admin_url( 'admin.php?page=wedevs-academy&inserted=true' );
-       
+        if ( $id ) {
+            $redirected_to = admin_url( 'admin.php?page=wedevs-academy&action=edit&address-updated=true&id=' . $id );
+        } else {
+            $redirected_to = admin_url( 'admin.php?page=wedevs-academy&inserted=true' );
+        }
+        
         wp_redirect( $redirected_to );
         exit;
     }
